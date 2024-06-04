@@ -41,25 +41,25 @@
     'zlibrary': 'https://singlelogin.re/img/logo.zlibrary.png'
   }
 
-  function create_link_for_web(web, ISBN, container) {
+  function create_link_for_web(web, query, container, isbn = true) {
     switch (web) {
       case 'douban':
-        create_link(logos.douban, build_douban_link(ISBN), container, 32);
+        create_link(logos.douban, build_douban_link(query), container, 32);
         break;
       case 'goodreads':
-        create_link(logos.goodreads, build_goodreads_link(ISBN), container, 32, 200);
+        create_link(logos.goodreads, build_goodreads_link(query), container, 32, 200);
         break;
       case 'google_books':
-        create_link(logos.google_books, build_google_books_link(ISBN), container, 32);
+        create_link(logos.google_books, build_google_books_link(query, isbn), container, 32);
         break;
       case 'neodb':
-        create_link(logos.neodb, build_neodb_link(ISBN), container, 32, 100);
+        create_link(logos.neodb, build_neodb_link(query), container, 32, 100);
         break;
       case 'anna_archive':
-        create_link(logos.anna_archive, build_anna_archive_link(ISBN), container, 32, 200);
+        create_link(logos.anna_archive, build_anna_archive_link(query), container, 32, 200);
         break;
       case 'zlibrary':
-        create_link(logos.zlibrary, build_zlibrary_link(ISBN), container, 32, 126);
+        create_link(logos.zlibrary, build_zlibrary_link(query), container, 32, 126);
         break;
     }
   }
@@ -90,9 +90,12 @@
     return `https://www.goodreads.com/search?q=${query}`
   }
 
-  function build_google_books_link(query) {
-    // q=isbn:${query}
-    return `https://www.google.com/search?tbo=p&tbm=bks&q=${query}`
+  function build_google_books_link(query, isbn = true) {
+    if(isbn) {
+      return `https://www.google.com/search?tbo=p&tbm=bks&q=isbn:${query}`
+    } else {
+      return `https://www.google.com/search?tbo=p&tbm=bks&q=${query}`
+    }
   }
 
   function build_neodb_link(query) {
@@ -109,10 +112,10 @@
     return `https://annas-archive.org/search?q=${query}`
   }
 
-  function build_list(web, query, container, prepend = true, background = '#f6f6f2') {
+  function build_list(web, query, container, prepend = true, isbn = true)  {
     const helper_container = document.createElement('div');
     helper_container.setAttribute('id', 'book-helper')
-    helper_container.style = `padding: 18px 16px; background-color: ${background}; margin: 20px 0; width: 300px;`;
+    helper_container.style = `padding: 18px 16px; background-color: #f6f6f2; margin: 20px 0; width: 300px;`;
     // title
     const h2 = document.createElement('h2');
     h2.style = 'font-size: 15px; color: #007722;';
@@ -127,7 +130,7 @@
     links_container.setAttribute('id', 'book-helper-list');
     links_container.style = 'list-style: none;';
     for (const web of included_webs) {
-      create_link_for_web(web, query, links_container);
+      create_link_for_web(web, query, links_container, isbn);
     }
     helper_container.appendChild(links_container);
     // footer
@@ -150,11 +153,11 @@
     // get ISBN from page
     const info = document.querySelector('#content #info').textContent.trim();
     const isbn_regexp = /ISBN: (\d+)*/;
-    const ISBN = info.match(isbn_regexp)[1];
+    const isbn = info.match(isbn_regexp)[1];
 
     // create container and links
     const aside_container = document.querySelector('#content .aside')
-    build_list('douban', ISBN, aside_container);
+    build_list('douban', isbn, aside_container, true, true);
   }
 
   function create_btns_goodreads() {
@@ -166,16 +169,16 @@
     const info = document.querySelector('.EditionDetails').textContent.trim();
     console.debug(info);
     const isbn_regexp = /ISBN(\d+) \(ISBN10/;
-    const ISBN = info.match(isbn_regexp);
+    const isbn = info.match(isbn_regexp);
 
     // create container and links
     const aside_container = document.querySelector('.BookPage__leftColumn .Sticky')
-    if(!ISBN) {
+    if(!isbn) {
       // search with title
       const title = document.querySelector('.BookPageTitleSection__title h1').textContent.trim();
-      build_list('goodreads', title, aside_container, false);
+      build_list('goodreads', title, aside_container, false, false);
     } else {
-      build_list('goodreads', ISBN[1], aside_container, false);
+      build_list('goodreads', isbn[1], aside_container, false, true);
     }
   }
 
@@ -210,16 +213,16 @@
     const info = document.querySelector('.js-md5-codes-tabs').textContent.trim();
     console.debug(info);
     const isbn_regexp = /ISBN-13(\d+-\d+-\d+-\d+-\d+)/;
-    const ISBN = info.match(isbn_regexp);
+    const isbn = info.match(isbn_regexp);
 
     // create container and links
     const aside_container = document.querySelector('.main')
-    if(!ISBN) {
+    if(!isbn) {
       // search with title
       const title = document.querySelector('.text-3xl.font-bold').textContent.trim();
-      build_list('anna_archive', title, aside_container, true);
+      build_list('anna_archive', title, aside_container, true, false);
     } else {
-      build_list('anna_archive', ISBN[1].replace(/-/g,''), aside_container, true);
+      build_list('anna_archive', isbn[1].replace(/-/g,''), aside_container, true, true);
     }
   }
 
@@ -232,7 +235,7 @@
     const aside_container = document.querySelector('#main')
     // search with title
     const title = document.querySelector('div[role="heading"]').textContent.trim();
-    build_list('google_books', title, aside_container, true);
+    build_list('google_books', title, aside_container, true, false);
   }
 
   function create_btns_zlibrary() {
@@ -249,9 +252,9 @@
     if(!isbn[1]) {
       // search with title
       const title = document.querySelector('h1[itemprop="name"]').textContent.trim();
-      build_list('zlibrary', title, aside_container, false);
+      build_list('zlibrary', title, aside_container, false, false);
     } else {
-      build_list('zlibrary', isbn[1], aside_container, false);
+      build_list('zlibrary', isbn[1], aside_container, false, true);
     }
   }
 
