@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Book helper
 // @namespace    http://tampermonkey.net/
-// @version      1.0
+// @version      1.1
 // @description  A helper for searching books inspired by douban book+
 // @author       tizee
 // @match        https://www.goodreads.com/book/show/*
@@ -11,6 +11,7 @@
 // @match        https://annas-archive.org/md5/*
 // @match        https://singlelogin.re/book/*
 // @icon         https://cdn.jsdelivr.net/gh/twitter/twemoji@latest/assets/72x72/1f4da.png
+// @run-at       document-idle
 // @grant        none
 // ==/UserScript==
 
