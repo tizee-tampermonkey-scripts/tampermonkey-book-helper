@@ -1,9 +1,9 @@
 // ==UserScript==
 // @name         Book helper
 // @namespace    https://github.com/tizee-tampermonkey-scripts/tampermonkey-book-helper
-// @downloadURL  https://raw.githubusercontent.com/tizee-tampermonkey-scripts/tampermonkey-book-helper/main/book.js
-// @updateURL    https://raw.githubusercontent.com/tizee-tampermonkey-scripts/tampermonkey-book-helper/main/book.js
-// @version      1.1.4
+// @downloadURL  https://raw.githubusercontent.com/tizee-tampermonkey-scripts/tampermonkey-book-helper/refs/heads/main/book.js
+// @updateURL    https://raw.githubusercontent.com/tizee-tampermonkey-scripts/tampermonkey-book-helper/refs/heads/main/book.js
+// @version      1.1.5
 // @description  A helper for searching books inspired by douban book+
 // @author       tizee
 // @match        https://www.goodreads.com/book/show/*
